@@ -38,6 +38,9 @@ export PATH="$HOME/dev/eza:$PATH"
 export PATH="$HOME/dev/bat:$PATH"
 alias bat='bat -P'
 
+# fd
+export PATH="$HOME/dev/fd:$PATH"
+
 # fnm
 export PATH="$HOME/dev/fnm:$PATH"
 export FNM_NODE_DIST_MIRROR=https://mirrors.aliyun.com/nodejs-release/
