@@ -24,6 +24,7 @@ alias port='netstat -nltp | sort -k 1,1 -k 4,4'
 alias port4='netstat -nltp4 | sort -k 1,1 -k 4,4'
 alias ports='netstat -nltup | sort -k 1,1 -k 4,4'
 alias ports4='netstat -nltup4 | sort -k 1,1 -k 4,4'
+alias iftop='iftop -bBnNP'
 
 # eza
 alias el='eza --group-directories-first -F'
@@ -44,7 +45,7 @@ export PATH="$HOME/dev/fd:$PATH"
 # fnm
 export PATH="$HOME/dev/fnm:$PATH"
 export FNM_NODE_DIST_MIRROR=https://mirrors.aliyun.com/nodejs-release/
-eval "$(fnm env --use-on-cd --version-file-strategy=recursive --shell zsh)"
+[ -f "$HOME/dev/fnm/fnm" ] && eval "$(fnm env --use-on-cd --version-file-strategy=recursive --shell zsh)"
 
 # neovim
 export PATH="$HOME/dev/neovim/bin:$PATH"
