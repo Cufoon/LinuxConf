@@ -1,10 +1,9 @@
-#!/bin/zsh
+#!/bin/bash
 
 # 设置严格模式
 set -euo pipefail
 
 # 定义常量
-readonly CONFIG_DIR="$HOME"
 readonly BACKUP_DIR="$HOME/.cfconf_backup"
 readonly CONFIG_FILES=(
     ".zshrc_cufoon"
@@ -20,12 +19,8 @@ readonly GEN_CONFIG_FILES=(
     ".gitconfig_cufoon"
 )
 
-readonly GEN_TO__zshrc_cufoon="$HOME/.zshrc_cufoon"
 readonly GEN_TO__zshrc_cufoon_proxy="$HOME/.zshrc_cufoon_proxy"
-readonly GEN_TO__zshrc_cufoon_proxy_off="$HOME/.zshrc_cufoon_proxy_off"
 readonly GEN_TO__gitconfig="$HOME/.gitconfig"
-readonly GEN_TO__npmrc="$HOME/.npmrc"
-readonly GEN_TO__vimrc="$HOME/.vimrc"
 
 readonly GEN_CONFIG__zshrc_cufoon_proxy_url_http="$HOME/.zshrc_cufoon_proxy_url_http"
 readonly GEN_CONFIG__zshrc_cufoon_proxy_url_socks="$HOME/.zshrc_cufoon_proxy_url_socks"
@@ -34,7 +29,7 @@ readonly GEN_CONFIG__gitconfig_cufoon="$HOME/.gitconfig_cufoon"
 # 显示使用方法
 show_usage() {
     cat <<EOF
-Usage: $(basename $0) [-r XXX] [-l] [-R timestamp] [-y] [http_proxy] [socks_proxy]
+Usage: $(basename "$0") [-r XXX] [-l] [-R timestamp] [-y] [http_proxy] [socks_proxy]
 Options:
     -r XXX  Control proxy reinput (first digit for HTTP, second for SOCKS, third for GIT)
             |  Example: -r 100 to reinput only http proxy
@@ -53,7 +48,8 @@ EOF
 show_diff() {
     local file=$1
     local new_content=$2
-    local temp_file=$(mktemp)
+    local temp_file
+    temp_file="$(mktemp)"
 
     echo "$new_content" >"$temp_file"
 
@@ -85,7 +81,7 @@ confirm_action() {
         prompt="$message [y/N] "
     fi
 
-    read "response?$prompt"
+    read -r -p "$prompt" response
     response=${response:-$default}
 
     [[ ${response:0:1} =~ [Yy] ]]
@@ -175,7 +171,8 @@ validate_url() {
     fi
 
     # 提取端口并校验范围
-    local port=$(awk -F: '{print $NF}' <<<"$url")
+    local port
+    port=$(awk -F: '{print $NF}' <<<"$url")
     if [[ $port -lt 1 || $port -gt 65535 ]]; then
         echo "Error: Port must be between 1 and 65535" >&2
         return 1
@@ -205,7 +202,8 @@ safe_write_file() {
 
 # 备份现有配置
 backup_configs() {
-    local backup_dir="$BACKUP_DIR/$(date +%Y%m%d%H%M%S)"
+    local backup_dir
+    backup_dir="$BACKUP_DIR/$(date +%Y%m%d%H%M%S)"
     mkdir -p "$backup_dir"
 
     local have_config_file=0
@@ -270,12 +268,10 @@ while getopts "hr:lR:y" opt; do
     \?)
         echo "Error: Unknown option -$OPTARG" >&2
         show_usage
-        exit 1
         ;;
     :)
         echo "Error: Missing argument for -$OPTARG" >&2
         show_usage
-        exit 1
         ;;
     esac
 done
@@ -313,7 +309,7 @@ if [[ -z "$PROXY_URL_HTTP" ]]; then
     if [[ -f "$GEN_CONFIG__zshrc_cufoon_proxy_url_http" ]]; then
         if [ "${OPTION_SHOULD_REINPUT_PROXY_HTTP:-0}" = "1" ]; then
             echo "HTTP proxy configuration exists, but reinput requested."
-            read "PROXY_URL_HTTP?Enter HTTP proxy URL: "
+            read -r "PROXY_URL_HTTP?Enter HTTP proxy URL: "
             validate_url "$PROXY_URL_HTTP" || exit 1
         else
             echo "Using existing HTTP proxy configuration."
@@ -321,7 +317,7 @@ if [[ -z "$PROXY_URL_HTTP" ]]; then
         fi
     else
         echo "HTTP proxy configuration not found, please provide a new one."
-        read "PROXY_URL_HTTP?Enter HTTP proxy URL: "
+        read -r "PROXY_URL_HTTP?Enter HTTP proxy URL: "
         validate_url "$PROXY_URL_HTTP" || exit 1
     fi
 else
@@ -334,7 +330,7 @@ if [[ -z "$PROXY_URL_SOCKS" ]]; then
     if [[ -f "$GEN_CONFIG__zshrc_cufoon_proxy_url_socks" ]]; then
         if [ "${OPTION_SHOULD_REINPUT_PROXY_SOCKS:-0}" = "1" ]; then
             echo "SOCKS proxy configuration exists, but reinput requested."
-            read "PROXY_URL_SOCKS?Enter SOCKS proxy URL: "
+            read -r "PROXY_URL_SOCKS?Enter SOCKS proxy URL: "
             validate_url "$PROXY_URL_SOCKS" || exit 1
         else
             echo "Using existing SOCKS proxy configuration."
@@ -342,7 +338,7 @@ if [[ -z "$PROXY_URL_SOCKS" ]]; then
         fi
     else
         echo "SOCKS proxy configuration not found, please provide a new one."
-        read "PROXY_URL_SOCKS?Enter SOCKS proxy URL: "
+        read -r "PROXY_URL_SOCKS?Enter SOCKS proxy URL: "
         validate_url "$PROXY_URL_SOCKS" || exit 1
     fi
 else
@@ -356,8 +352,8 @@ GITCONFIG_EMAIL=""
 if [[ -f "$GEN_CONFIG__gitconfig_cufoon" ]]; then
     if [ "${OPTION_SHOULD_REINPUT_GITCONFIG:-0}" = "1" ]; then
         echo "git configuration exists, but reinput requested."
-        read "GITCONFIG_NAME?Enter git user name: "
-        read "GITCONFIG_EMAIL?Enter git user email: "
+        read -r "GITCONFIG_NAME?Enter git user name: "
+        read -r "GITCONFIG_EMAIL?Enter git user email: "
     else
         echo "Using existing git configuration."
         GITCONFIG_FROM_FILE="$(safe_read_file "$GEN_CONFIG__gitconfig_cufoon")"
@@ -367,38 +363,34 @@ if [[ -f "$GEN_CONFIG__gitconfig_cufoon" ]]; then
     fi
 else
     echo "git configuration not found, please provide a new one."
-    read "GITCONFIG_NAME?Enter git user name: "
-    read "GITCONFIG_EMAIL?Enter git user email: "
+    read -r "GITCONFIG_NAME?Enter git user name: "
+    read -r "GITCONFIG_EMAIL?Enter git user email: "
 fi
 
 # 备份现有配置
 backup_configs
 
 # 获取各配置文件相对于用户主目录的路径
-RPATH_zshrc_cufoon="$(realpath --relative-to="$HOME" "$CF_SCRIPT_DIR/.zshrc_cufoon")"
 RPATH_zshrc_cufoon_proxy="$(realpath --relative-to="$HOME" "$CF_SCRIPT_DIR/.zshrc_cufoon_proxy")"
-RPATH_zshrc_cufoon_proxy_off="$(realpath --relative-to="$HOME" "$CF_SCRIPT_DIR/.zshrc_cufoon_proxy_off")"
 RPATH_gitconfig="$(realpath --relative-to="$HOME" "$CF_SCRIPT_DIR/.gitconfig")"
-RPATH_npmrc="$(realpath --relative-to="$HOME" "$CF_SCRIPT_DIR/.npmrc")"
-RPATH_vimrc="$(realpath --relative-to="$HOME" "$CF_SCRIPT_DIR/.vimrc")"
 
 # 处理代理 URL 中的斜杠
-SED_SAFE_PROXY_URL_HTTP="$(echo $PROXY_URL_HTTP | sed 's/\//\\\//g')"
-SED_SAFE_PROXY_URL_SOCKS="$(echo $PROXY_URL_SOCKS | sed 's/\//\\\//g')"
-SED_SAFE_GITCONFIG_NAME="$(echo $GITCONFIG_NAME | sed 's/\//\\\//g')"
-SED_SAFE_GITCONFIG_EMAIL="$(echo $GITCONFIG_EMAIL | sed 's/\//\\\//g')"
+SED_SAFE_PROXY_URL_HTTP="$(echo "$PROXY_URL_HTTP" | sed 's/\//\\\//g')"
+SED_SAFE_PROXY_URL_SOCKS="$(echo "$PROXY_URL_SOCKS" | sed 's/\//\\\//g')"
+SED_SAFE_GITCONFIG_NAME="$(echo "$GITCONFIG_NAME" | sed 's/\//\\\//g')"
+SED_SAFE_GITCONFIG_EMAIL="$(echo "$GITCONFIG_EMAIL" | sed 's/\//\\\//g')"
 
 # 在生成新配置之前显示差异并确认
 echo "The following changes will be made:"
 
 # 生成并预览 gitconfig
-GEN_gitconfig="$(cat "$RPATH_gitconfig" | sed "s/__cufoon_proxy_url_placeholder__/$SED_SAFE_PROXY_URL_SOCKS/g")"
-GEN_gitconfig="$(echo "$GEN_gitconfig" | sed "s/__cufoon_name_placeholder__/$SED_SAFE_GITCONFIG_NAME/g")"
-GEN_gitconfig="$(echo "$GEN_gitconfig" | sed "s/__cufoon_email_placeholder__/$SED_SAFE_GITCONFIG_EMAIL/g")"
+GEN_gitconfig="$(sed "s/__cufoon_proxy_url_placeholder__/$SED_SAFE_PROXY_URL_SOCKS/g" "$RPATH_gitconfig")"
+GEN_gitconfig="${GEN_gitconfig//__cufoon_name_placeholder__/$SED_SAFE_GITCONFIG_NAME}"
+GEN_gitconfig="${GEN_gitconfig//__cufoon_email_placeholder__/$SED_SAFE_GITCONFIG_EMAIL}"
 safe_write_file_with_confirm "$GEN_TO__gitconfig" "$GEN_gitconfig" "$SKIP_CONFIRM"
 
 # 生成并预览 zshrc_cufoon_proxy
-GEN_zshrc_cufoon_proxy="$(cat $RPATH_zshrc_cufoon_proxy | sed "s/__cufoon_proxy_url_placeholder__/$SED_SAFE_PROXY_URL_HTTP/g")"
+GEN_zshrc_cufoon_proxy="$(sed "s/__cufoon_proxy_url_placeholder__/$SED_SAFE_PROXY_URL_HTTP/g" "$RPATH_zshrc_cufoon_proxy")"
 safe_write_file_with_confirm "$GEN_TO__zshrc_cufoon_proxy" "$GEN_zshrc_cufoon_proxy" "$SKIP_CONFIRM"
 
 # 复制其他配置文件，显示差异并确认
