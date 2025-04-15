@@ -1,0 +1,5 @@
+CUFOON_EXTERNAL_PROXY="__cufoon_proxy_url_placeholder__"
+export HTTP_PROXY="$CUFOON_EXTERNAL_PROXY"
+export http_proxy="$CUFOON_EXTERNAL_PROXY"
+export HTTPS_PROXY="$CUFOON_EXTERNAL_PROXY"
+export https_proxy="$CUFOON_EXTERNAL_PROXY"

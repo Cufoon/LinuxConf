@@ -1,0 +1,69 @@
+########################################## ++++ Added by Cufoon ++++ ##########################################
+
+# alias
+alias l='ls -CF'
+alias ll='ls -ahlF'
+alias la='ls -A'
+alias cd.='cd .'
+alias cd..='cd ..'
+alias cls='clear'
+
+# proxy
+alias mihomo='/root/app/mihomo/mihomo -d /root/app/mihomo/config'
+alias setproxy="source $HOME/.zshrc_cufoon_proxy"
+alias unsetproxy="source $HOME/.zshrc_cufoon_proxy_off"
+alias testproxy='curl -i google.com'
+
+# other
+alias cnpm='npm --registry=https://registry.npmmirror.com'
+alias clearapt="dpkg -l | awk '/^rc/ {print \$2}' | xargs dpkg -P"
+alias dps="docker ps --format 'table {{.Names}}\t{{.ID}}\t{{.Size}}\t{{.Status}}\t{{.Ports}}'"
+alias acme='acme.sh --yes-I-know-dns-manual-mode-enough-go-ahead-please'
+alias sysinfo='lsb_release -a'
+alias port='netstat -nltp | sort -k 1,1 -k 4,4'
+alias port4='netstat -nltp4 | sort -k 1,1 -k 4,4'
+alias ports='netstat -nltup | sort -k 1,1 -k 4,4'
+alias ports4='netstat -nltup4 | sort -k 1,1 -k 4,4'
+alias iftop='iftop -bBnNP'
+
+# eza
+alias el='eza --group-directories-first -F'
+alias ela='eza --all --group-directories-first -F'
+alias ell='eza --group --tree --long --all --level 1 --group-directories-first -F --icons --header --git'
+alias ell0='eza --group --tree --long --all --group-directories-first -F --icons --header --git'
+alias ell2='eza --group --tree --long --all --level 2 --group-directories-first -F --icons --header --git'
+alias ell3='eza --group --tree --long --all --level 3 --group-directories-first -F --icons --header --git'
+export PATH="$HOME/dev/eza:$PATH"
+
+# bat
+export PATH="$HOME/dev/bat:$PATH"
+alias bat='bat -P'
+
+# fd
+export PATH="$HOME/dev/fd:$PATH"
+
+# fnm
+export PATH="$HOME/dev/fnm:$PATH"
+export FNM_NODE_DIST_MIRROR=https://mirrors.aliyun.com/nodejs-release/
+[ -f "$HOME/dev/fnm/fnm" ] && eval "$(fnm env --use-on-cd --version-file-strategy=recursive --shell zsh)"
+
+# neovim
+export PATH="$HOME/dev/neovim/bin:$PATH"
+
+# golang
+export PATH="$HOME/dev/go/bin:$PATH"
+
+# golang proxy
+export GOPROXY=https://mirrors.aliyun.com/goproxy/
+
+# rust
+export RUSTUP_UPDATE_ROOT=https://mirrors.aliyun.com/rustup/rustup
+export RUSTUP_DIST_SERVER=https://mirrors.aliyun.com/rustup
+
+# pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+[[ -d $PYENV_ROOT/bin ]] && eval "$(pyenv init -)"
+
+########################################## ---- Added by Cufoon ---- ##########################################
+

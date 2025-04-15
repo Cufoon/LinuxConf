@@ -1,0 +1,32 @@
+[user]
+name = __cufoon_name_placeholder__
+email = __cufoon_email_placeholder__
+
+[alias]
+rank = !git --no-pager shortlog -sn --no-merges
+rp = remote prune
+fp = fetch -p -P --all
+cm = commit -m
+p = push
+pf = push -f
+s = status
+b = !git --no-pager branch -vva
+c = checkout
+ct = checkout -t
+cb = checkout -b
+bd = branch -D
+mf = merge --ff-only
+ms = merge --squash
+rs = restore --staged
+
+[http "https://github.com/"]
+proxy = "__cufoon_proxy_url_placeholder__"
+
+[credential]
+helper = store --file ~/.my-git-credentials
+
+[init]
+defaultBranch = main
+
+[core]
+editor = vim
