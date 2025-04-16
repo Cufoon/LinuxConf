@@ -309,7 +309,7 @@ if [[ -z "$PROXY_URL_HTTP" ]]; then
     if [[ -f "$GEN_CONFIG__zshrc_cufoon_proxy_url_http" ]]; then
         if [ "${OPTION_SHOULD_REINPUT_PROXY_HTTP:-0}" = "1" ]; then
             echo "HTTP proxy configuration exists, but reinput requested."
-            read -r "PROXY_URL_HTTP?Enter HTTP proxy URL: "
+            read -r -p "Enter HTTP proxy URL: " PROXY_URL_HTTP
             validate_url "$PROXY_URL_HTTP" || exit 1
         else
             echo "Using existing HTTP proxy configuration."
@@ -317,7 +317,7 @@ if [[ -z "$PROXY_URL_HTTP" ]]; then
         fi
     else
         echo "HTTP proxy configuration not found, please provide a new one."
-        read -r "PROXY_URL_HTTP?Enter HTTP proxy URL: "
+        read -r -p "Enter HTTP proxy URL: " PROXY_URL_HTTP
         validate_url "$PROXY_URL_HTTP" || exit 1
     fi
 else
@@ -330,7 +330,7 @@ if [[ -z "$PROXY_URL_SOCKS" ]]; then
     if [[ -f "$GEN_CONFIG__zshrc_cufoon_proxy_url_socks" ]]; then
         if [ "${OPTION_SHOULD_REINPUT_PROXY_SOCKS:-0}" = "1" ]; then
             echo "SOCKS proxy configuration exists, but reinput requested."
-            read -r "PROXY_URL_SOCKS?Enter SOCKS proxy URL: "
+            read -r -p "Enter SOCKS proxy URL: " PROXY_URL_SOCKS
             validate_url "$PROXY_URL_SOCKS" || exit 1
         else
             echo "Using existing SOCKS proxy configuration."
@@ -338,7 +338,7 @@ if [[ -z "$PROXY_URL_SOCKS" ]]; then
         fi
     else
         echo "SOCKS proxy configuration not found, please provide a new one."
-        read -r "PROXY_URL_SOCKS?Enter SOCKS proxy URL: "
+        read -r -p "Enter SOCKS proxy URL: " PROXY_URL_SOCKS
         validate_url "$PROXY_URL_SOCKS" || exit 1
     fi
 else
@@ -352,8 +352,8 @@ GITCONFIG_EMAIL=""
 if [[ -f "$GEN_CONFIG__gitconfig_cufoon" ]]; then
     if [ "${OPTION_SHOULD_REINPUT_GITCONFIG:-0}" = "1" ]; then
         echo "git configuration exists, but reinput requested."
-        read -r "GITCONFIG_NAME?Enter git user name: "
-        read -r "GITCONFIG_EMAIL?Enter git user email: "
+        read -r -p "Enter git user name: " GITCONFIG_NAME
+        read -r -p "Enter git user email: " GITCONFIG_EMAIL
     else
         echo "Using existing git configuration."
         GITCONFIG_FROM_FILE="$(safe_read_file "$GEN_CONFIG__gitconfig_cufoon")"
@@ -363,8 +363,8 @@ if [[ -f "$GEN_CONFIG__gitconfig_cufoon" ]]; then
     fi
 else
     echo "git configuration not found, please provide a new one."
-    read -r "GITCONFIG_NAME?Enter git user name: "
-    read -r "GITCONFIG_EMAIL?Enter git user email: "
+    read -r -p "Enter git user name: " GITCONFIG_NAME
+    read -r -p "Enter git user email: " GITCONFIG_EMAIL
 fi
 
 # 备份现有配置
