@@ -42,6 +42,9 @@ alias bat='bat -P'
 # fd
 export PATH="$HOME/dev/fd:$PATH"
 
+# ripgrep
+export PATH="$HOME/dev/ripgrep:$PATH"
+
 # fnm
 export PATH="$HOME/dev/fnm:$PATH"
 export FNM_NODE_DIST_MIRROR=https://mirrors.aliyun.com/nodejs-release/
